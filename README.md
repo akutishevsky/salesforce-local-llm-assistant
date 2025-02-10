@@ -4,7 +4,7 @@
 
 > LWC that runs LLMs locally on your computer and uses Salesforce records for context.
 
-[Read the article](#) | [Watch the demo](#)
+[Read the article](#) | [Watch the demo](https://www.youtube.com/watch?v=QKkRJ8RAlnE)
 
 ## How to start
 
