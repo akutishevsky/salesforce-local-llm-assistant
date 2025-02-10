@@ -1,0 +1,5 @@
+.slds-chat {
+    overflow-y: auto;
+    min-height: 5rem;
+    max-height: 20rem;
+}

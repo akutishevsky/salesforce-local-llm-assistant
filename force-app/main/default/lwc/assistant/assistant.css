@@ -1,0 +1,52 @@
+article.animated {
+    animation-name: generating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes generating {
+    0% {
+        box-shadow:
+            0px -1px 3px 0px #fcc003,
+            0px 3px 3px #5867e8,
+            5px -5px 10px 0 #cb65ff,
+            -5px -5px 5px #ff538a;
+        transform: translateZ(-5px);
+    }
+    25% {
+        box-shadow:
+            -1px -2px 5px 0 #fcd420,
+            -1px 2px 6px #5e72f4,
+            0px -5px 20px #cb65ff,
+            -5px 0px 10px #ff538a;
+    }
+    50% {
+        box-shadow:
+            0px 0px 8px 2px #ffd740,
+            0px 4px 8px #677bff,
+            2px -6px 15px #d070ff,
+            -2px -2px 8px #ff609a;
+        transform: translateZ(10px);
+    }
+    75% {
+        box-shadow:
+            2px -2px 3px 0 #fcc003,
+            -4px 3px 3px 0 #5867e8,
+            0 -5px 10px #cb65ff,
+            -5px 5px 20px #ff538a;
+    }
+    100% {
+        box-shadow:
+            3px -2px 5px 0 #fcc003,
+            -2px 1px 3px 0 #5867e8,
+            5px -5px 20px #cb65ff,
+            0px 5px 10px #ff538a;
+        transform: translateZ(-5px);
+    }
+}
+
+iframe {
+    display: none;
+}

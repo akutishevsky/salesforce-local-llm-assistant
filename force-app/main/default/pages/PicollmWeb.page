@@ -1,0 +1,196 @@
+<apex:page>
+    <input type="file" accept=".pllm" id="file-upload-input" />
+
+    <apex:includeScript value="{!$Resource.picoLLM}"></apex:includeScript>
+    <script type="application/javascript">
+        /**
+         * CONSTANTS
+         */
+        const STRATEGIES = {
+            LOAD_MODEL: "LOAD_MODEL",
+            GENERATE_RESPONSE: "GENERATE_RESPONSE",
+            SET_SYSTEM_PROMPT: "SET_SYSTEM_PROMPT",
+            SET_CONFIGURATION: "SET_CONFIGURATION"
+        };
+
+        // the same as in the `force-app/main/default/lwc/agent/Strategy.js` file
+        const PARENT_CMP_STRATEGIES = {
+            MODEL_LOADING: "MODEL_LOADING",
+            MODEL_LOADED: "MODEL_LOADED",
+            GENERATING_RESPONSE: "GENERATING_RESPONSE",
+            STOPPED_GENERATING_RESPONSE: "STOPPED_GENERATING_RESPONSE",
+            RECEIVED_DEVICE_LIST: "RECEIVED_DEVICE_LIST",
+            DISPLAY_MESSAGE: "DISPLAY_MESSAGE"
+        };
+
+        /**
+         * LOCAL VARIABLES 
+         */
+        let incomingPayload = {};
+        let outgoingPayload = {};
+        let worker;                 // https://picovoice.ai/docs/api/picollm-web/#picollmworker
+        let model;                  // https://picovoice.ai/docs/api/picollm-web/#picollmmodel-1
+        let dialog;                 // https://picovoice.ai/docs/api/picollm-web/#dialog
+        let configuration;          // https://picovoice.ai/docs/api/picollm-web/#picollmgenerateoptions
+
+        window.onload = async () => {
+            try {
+                listenToFileUploading();
+                listenToIncomingMessages();
+                await listAvailableDevices();
+            } catch (error) {
+                displayMessage(error.message);
+            }
+        };
+
+        const listenToFileUploading = () => {
+            const input = document.querySelector('input[type="file"]');
+            input.addEventListener("change", async (event) => {
+                if (event.target.files.length === 0) {
+                    return;
+                }
+
+                outgoingPayload.strategy = PARENT_CMP_STRATEGIES.MODEL_LOADING;
+                postMessage(outgoingPayload);
+
+                model = event.target.files[0];
+                // https://picovoice.ai/docs/api/picollm-web/#picollmworkercreate
+                worker = await PicollmWeb.PicoLLMWorker.create(incomingPayload.picoApiKey, { modelFile: model });
+
+                outgoingPayload.strategy = PARENT_CMP_STRATEGIES.MODEL_LOADED;
+                postMessage(outgoingPayload);
+            });
+        };
+
+        const listenToIncomingMessages = () => {
+            window.addEventListener("message", async (event) => {
+                if (isValidOrigin(event) === false) {
+                    return;
+                }
+
+                incomingPayload = event.data;
+
+                let context;
+                switch (incomingPayload.strategy) {
+                    case STRATEGIES.LOAD_MODEL:
+                        context = new Context(new StrategyLoadModel());
+                        break;
+                    case STRATEGIES.GENERATE_RESPONSE:
+                        context = new Context(new StrategyGenerateResponse());
+                        break;
+                    case STRATEGIES.SET_SYSTEM_PROMPT:
+                        context = new Context(new StrategySetSystemPrompt());
+                        break;
+                    case STRATEGIES.SET_CONFIGURATION:
+                        context = new Context(new StrategySetConfiguration());
+                        break;
+                    default:
+                        break;
+                }
+                await context?.executeStrategy(incomingPayload);
+            });
+        };
+
+        const listAvailableDevices = async () => {
+            const devices = await PicollmWeb.PicoLLM.listAvailableDevices();
+            postMessage({ strategy: PARENT_CMP_STRATEGIES.RECEIVED_DEVICE_LIST, devices });
+        };
+
+        /**
+         * HELPER FUNCTIONS
+         */
+        isValidOrigin = (event) => {
+            return `${event.origin}/` === document.referrer;
+        };
+
+        const displayMessage = (message) => {
+            outgoingPayload.strategy = PARENT_CMP_STRATEGIES.DISPLAY_MESSAGE;
+            outgoingPayload.message = message;
+            postMessage(outgoingPayload);
+        };
+
+        const postMessage = (message) => {
+            parent.postMessage(message, document.referrer);
+        };
+
+        /**
+         * STRATEGY PATTERN IMPLEMENTATION
+         */
+        class Strategy {
+            async execute() {
+                throw new Error("execute method must be implemented");
+            }
+        }
+
+        class StrategyLoadModel extends Strategy {
+            execute() {
+                const inputFileUpload = document.querySelector("#file-upload-input");
+                inputFileUpload.click();
+            }
+        }
+
+        class StrategyGenerateResponse extends Strategy {
+            async execute() {
+                if (!dialog) {
+                    displayMessage("Please, set a system prompt first.");
+                    return;
+                }
+
+                // https://picovoice.ai/docs/api/picollm-web/#dialogaddhumanrequest
+                await dialog.addHumanRequest(incomingPayload.userPrompt);
+
+                // https://picovoice.ai/docs/api/picollm-web/#picollmworkergenerate
+                const { completion } = await worker.generate(dialog.prompt(), {
+                    temperature: configuration?.temperature,
+                    completionTokenLimit: configuration?.completionTokenLimit,
+                    topP: configuration?.topP,
+                    streamCallback: (token) => {
+                        outgoingPayload.strategy = PARENT_CMP_STRATEGIES.GENERATING_RESPONSE;
+                        outgoingPayload.token = token;
+                        postMessage(outgoingPayload);
+                    }
+                });
+
+                // https://picovoice.ai/docs/api/picollm-web/#dialogaddllmresponse
+                await dialog.addLLMResponse(completion);
+
+                outgoingPayload.strategy = PARENT_CMP_STRATEGIES.STOPPED_GENERATING_RESPONSE;
+                postMessage(outgoingPayload);
+            }
+        }
+
+        class StrategySetSystemPrompt extends Strategy {
+            async execute(payload) {
+                const systemPrompt = payload.systemPrompt;
+                if (worker) {
+                    // https://picovoice.ai/docs/api/picollm-web/#picollmworkergetdialog
+                    dialog = await worker.getDialog(undefined, 0, systemPrompt);
+                    displayMessage(`System prompt has been set to:\n ${systemPrompt}`);
+                } else {
+                    displayMessage("Please, select a model first.");
+                }
+            }
+        }
+
+        class StrategySetConfiguration extends Strategy {
+            async execute(payload) {
+                configuration = payload.configuration;
+                if (worker) {
+                    displayMessage(`Configuration has been set to:\n ${JSON.stringify(configuration)}`);
+                } else {
+                    displayMessage("Please, select a model first.");
+                }
+            }
+        }
+
+        class Context {
+            _strategy;
+            constructor(strategy) {
+                this._strategy = strategy;
+            }
+            async executeStrategy(payload) {
+                await this._strategy.execute(payload);
+            }
+        }
+    </script>
+</apex:page>

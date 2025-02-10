@@ -1,0 +1,29 @@
+<template>
+    <iframe src={iFrameSrc}></iframe>
+
+    <article class="slds-card">
+        <lightning-spinner
+            lwc:if={isLoading}
+            variant="brand"
+            size="medium"
+        ></lightning-spinner>
+
+        <c-assistant-header
+            device-list={deviceList}
+            onloadmodel={loadModel}
+            onselectsystemprompt={selectSystemPrompt}
+            onapplyconfiguration={applyConfiguration}
+        ></c-assistant-header>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <c-assistant-chat></c-assistant-chat>
+            <c-assistant-publisher
+                record-id={recordId}
+                ongenerateresponse={generateResponse}
+                onselectedrecord={setSelectedRecord}
+                onselectedrelatedrecords={setRelatedRecords}
+            >
+            </c-assistant-publisher>
+        </div>
+    </article>
+</template>

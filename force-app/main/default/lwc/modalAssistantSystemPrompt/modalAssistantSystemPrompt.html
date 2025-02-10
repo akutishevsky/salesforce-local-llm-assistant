@@ -1,0 +1,31 @@
+<template>
+    <lightning-modal-header label="System Prompt"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-accordion>
+            <template
+                lwc:if={systemPrompts}
+                for:each={systemPrompts}
+                for:item="prompt"
+            >
+                <lightning-accordion-section
+                    key={prompt.Id}
+                    name={prompt.Id}
+                    label={prompt.Name}
+                >
+                    <lightning-formatted-rich-text
+                        value={prompt.Prompt__c}
+                    ></lightning-formatted-rich-text>
+                    <lightning-button
+                        data-id={prompt.Id}
+                        slot="actions"
+                        label="Select"
+                        onclick={selectPrompt}
+                    ></lightning-button>
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Close" onclick={modalClose}></lightning-button>
+    </lightning-modal-footer>
+</template>

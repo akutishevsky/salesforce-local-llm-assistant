@@ -1,0 +1,24 @@
+<template>
+    <lightning-modal-header
+        label="Select Record Fields"
+    ></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-dual-listbox
+            name="populated-fields"
+            label="Populated Fields"
+            source-label="Available"
+            selected-label="Selected"
+            field-level-help="Select populated fields"
+            options={populatedFields}
+            onchange={selectField}
+        ></lightning-dual-listbox>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button
+            label="Confirm"
+            onclick={dispatchSelectFieldsEvent}
+            class="slds-m-right_medium"
+        ></lightning-button>
+        <lightning-button label="Close" onclick={modalClose}></lightning-button>
+    </lightning-modal-footer>
+</template>

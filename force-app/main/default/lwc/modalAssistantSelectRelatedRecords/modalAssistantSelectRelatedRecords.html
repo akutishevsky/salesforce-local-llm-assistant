@@ -1,0 +1,42 @@
+<template>
+    <lightning-modal-header
+        label="Select Related Records"
+    ></lightning-modal-header>
+    <lightning-modal-body
+        ><lightning-select
+            name="object"
+            label="Object"
+            value={selectedObject}
+            options={relatedObjects}
+            onchange={selectObject}
+            required
+        ></lightning-select
+        ><lightning-select
+            lwc:if={relationshipFields}
+            name="relationship-fields"
+            label="Relationship Fields"
+            value={selectedRelationshipField}
+            options={relationshipFields}
+            onchange={selectRelationshipField}
+            required
+        ></lightning-select>
+        <lightning-dual-listbox
+            lwc:if={selectedObjectFields}
+            name="populated-fields"
+            label="Populated Fields"
+            source-label="Available"
+            selected-label="Selected"
+            field-level-help="Select populated fields"
+            options={selectedObjectFields}
+            onchange={selectField}
+        ></lightning-dual-listbox>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button
+            label="Confirm"
+            onclick={confirm}
+            class="slds-m-right_medium"
+        ></lightning-button>
+        <lightning-button label="Close" onclick={modalClose}></lightning-button>
+    </lightning-modal-footer>
+</template>

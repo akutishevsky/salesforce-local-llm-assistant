@@ -1,0 +1,44 @@
+<template>
+    <div class="slds-media slds-comment slds-hint-parent">
+        <div class="slds-media__body">
+            <div class="slds-publisher slds-publisher_comment slds-is-active">
+                <label for="comment-text-input-01" class="slds-assistive-text"
+                    >Write a comment</label
+                >
+                <textarea
+                    id="comment-text-input-01"
+                    class="slds-publisher__input slds-input_bare slds-text-longform"
+                    placeholder="Write your prompt here..."
+                ></textarea>
+                <div
+                    class="slds-publisher__actions slds-grid slds-grid_align-spread"
+                >
+                    <ul class="slds-grid">
+                        <li>
+                            <lightning-button
+                                icon-name="utility:record_lookup"
+                                variant="base"
+                                label="Select Fields"
+                                onclick={openModalAssistantSelectRecordFields}
+                            ></lightning-button>
+                        </li>
+                        <li class="slds-m-left_small">
+                            <lightning-button
+                                icon-name="utility:record_collection"
+                                variant="base"
+                                label="Select Related Records"
+                                onclick={openModalAssistantSelectRelatedRecords}
+                            ></lightning-button>
+                        </li>
+                    </ul>
+                    <lightning-button
+                        variant="brand"
+                        label="Send"
+                        icon-name="utility:send"
+                        onclick={generateResponse}
+                    ></lightning-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

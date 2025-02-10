@@ -1,0 +1,48 @@
+<template>
+    <lightning-modal-header
+        label="Assistant Configuration"
+    ></lightning-modal-header>
+    <lightning-modal-body>
+        <!-- DEVICE -->
+        <!-- <lightning-select
+            name="devices"
+            label="Select Device"
+            value={selectedDevice}
+            options={devices}
+            onchange={selectDevice}
+        ></lightning-select> -->
+        <!-- COMPLETION TOKEN LIMIT -->
+        <lightning-input
+            type="number"
+            data-name="completionTokenLimit"
+            label="Completion Token Limit"
+            value="256"
+        ></lightning-input>
+        <!-- TEMPERATURE -->
+        <lightning-slider
+            data-name="temperature"
+            label="Temperature"
+            min="0"
+            max="2"
+            step="0.1"
+            value="1"
+        ></lightning-slider>
+        <!-- TOP P -->
+        <lightning-slider
+            data-name="topP"
+            label="Top P"
+            min="0"
+            max="1"
+            step="0.1"
+            value="1"
+        ></lightning-slider>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button
+            class="slds-m-right_medium"
+            label="Apply"
+            onclick={applyConfiguration}
+        ></lightning-button>
+        <lightning-button label="Close" onclick={modalClose}></lightning-button>
+    </lightning-modal-footer>
+</template>
