@@ -2,7 +2,6 @@
  * the same as in the `force-app/main/default/pages/PicollmWeb.page`
  */
 const IFRAME_STRATEGIES = {
-    LOAD_MODEL: "LOAD_MODEL",
     GENERATE_RESPONSE: "GENERATE_RESPONSE",
     SET_SYSTEM_PROMPT: "SET_SYSTEM_PROMPT",
     SET_CONFIGURATION: "SET_CONFIGURATION"

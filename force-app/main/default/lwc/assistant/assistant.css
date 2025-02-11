@@ -1,3 +1,7 @@
+article {
+    position: relative;
+}
+
 article.animated {
     animation-name: generating;
     animation-duration: 3s;
@@ -48,5 +52,11 @@ article.animated {
 }
 
 iframe {
-    display: none;
+    border: none;
+    position: absolute;
+    z-index: 1;
+    right: 6.2rem;
+    top: 0.8rem;
+    width: 7.8rem;
+    height: 2.2rem;
 }

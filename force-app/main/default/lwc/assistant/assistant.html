@@ -1,7 +1,7 @@
 <template>
-    <iframe src={iFrameSrc}></iframe>
-
     <article class="slds-card">
+        <iframe src={iFrameSrc}></iframe>
+
         <lightning-spinner
             lwc:if={isLoading}
             variant="brand"
@@ -10,7 +10,6 @@
 
         <c-assistant-header
             device-list={deviceList}
-            onloadmodel={loadModel}
             onselectsystemprompt={selectSystemPrompt}
             onapplyconfiguration={applyConfiguration}
         ></c-assistant-header>

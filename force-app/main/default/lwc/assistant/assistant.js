@@ -40,6 +40,11 @@ export default class Assistant extends LightningElement {
             this.executeStrategy(event);
         });
 
+        const iframe = this.template.querySelector("iframe");
+        iframe.addEventListener("load", () => {
+            helper.sendMessageToIframe(this, this.payload.getPayload());
+        });
+
         this.isListening = true;
     }
 
@@ -77,16 +82,6 @@ export default class Assistant extends LightningElement {
         if (data) {
             this.payload = new Payload(data?.fields?.Pico_API_Key__c?.value);
         } else if (error) {
-            chat.renderInboundMessage(this, error.message);
-            chat.scrollChat(this);
-        }
-    }
-
-    loadModel() {
-        try {
-            this.payload.setStrategy(IFRAME_STRATEGIES.LOAD_MODEL);
-            helper.sendMessageToIframe(this, this.payload.getPayload());
-        } catch (error) {
             chat.renderInboundMessage(this, error.message);
             chat.scrollChat(this);
         }

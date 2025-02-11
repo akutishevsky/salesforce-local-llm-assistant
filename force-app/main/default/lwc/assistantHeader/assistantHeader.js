@@ -5,10 +5,6 @@ import ModalAssistantSystemPrompt from "c/modalAssistantSystemPrompt";
 export default class AssistantHeader extends LightningElement {
     @api deviceList;
 
-    loadModel() {
-        this.dispatchEvent(new CustomEvent("loadmodel", {}));
-    }
-
     async openModalAssistantConfiguration() {
         await ModalAssistantConfiguration.open({
             size: "small",

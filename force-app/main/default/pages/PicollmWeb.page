@@ -1,5 +1,21 @@
 <apex:page>
-    <input type="file" accept=".pllm" id="file-upload-input" />
+
+    <head>
+        <apex:slds />
+    </head>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-file-selector slds-file-selector_files">
+                <input type="file" class="slds-file-selector__input slds-assistive-text" accept=".pllm" id="file-upload-input" aria-labelledby="file-selector-primary-label file-selector-secondary-label"
+                />
+                <label class="slds-file-selector__body" for="file-upload-input" id="file-selector-secondary-label">
+                    <span class="slds-file-selector__button slds-button slds-button_neutral" id="file-selector-primary-label">
+                        Load a model
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
 
     <apex:includeScript value="{!$Resource.picoLLM}"></apex:includeScript>
     <script type="application/javascript">
@@ -7,7 +23,6 @@
          * CONSTANTS
          */
         const STRATEGIES = {
-            LOAD_MODEL: "LOAD_MODEL",
             GENERATE_RESPONSE: "GENERATE_RESPONSE",
             SET_SYSTEM_PROMPT: "SET_SYSTEM_PROMPT",
             SET_CONFIGURATION: "SET_CONFIGURATION"
@@ -72,9 +87,6 @@
 
                 let context;
                 switch (incomingPayload.strategy) {
-                    case STRATEGIES.LOAD_MODEL:
-                        context = new Context(new StrategyLoadModel());
-                        break;
                     case STRATEGIES.GENERATE_RESPONSE:
                         context = new Context(new StrategyGenerateResponse());
                         break;
@@ -99,7 +111,7 @@
         /**
          * HELPER FUNCTIONS
          */
-        isValidOrigin = (event) => {
+        const isValidOrigin = (event) => {
             return `${event.origin}/` === document.referrer;
         };
 
@@ -119,13 +131,6 @@
         class Strategy {
             async execute() {
                 throw new Error("execute method must be implemented");
-            }
-        }
-
-        class StrategyLoadModel extends Strategy {
-            execute() {
-                const inputFileUpload = document.querySelector("#file-upload-input");
-                inputFileUpload.click();
             }
         }
 
