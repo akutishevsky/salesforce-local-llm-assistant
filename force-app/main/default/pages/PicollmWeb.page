@@ -12,7 +12,7 @@
                     <span class="slds-file-selector__button slds-button slds-button_neutral">
                         <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#upload')}"></use>
-                        </svg>Upload Files</span>
+                        </svg>Load a Model</span>
                 </label>
             </div>
         </div>
