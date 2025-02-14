@@ -9,9 +9,10 @@
                 <input type="file" class="slds-file-selector__input slds-assistive-text" accept=".pllm" id="file-upload-input" aria-labelledby="file-selector-primary-label file-selector-secondary-label"
                 />
                 <label class="slds-file-selector__body" for="file-upload-input" id="file-selector-secondary-label">
-                    <span class="slds-file-selector__button slds-button slds-button_neutral" id="file-selector-primary-label">
-                        Load a model
-                    </span>
+                    <span class="slds-file-selector__button slds-button slds-button_neutral">
+                        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <use xlink:href="{!URLFOR($Asset.SLDS, '/assets/icons/utility-sprite/svg/symbols.svg#upload')}"></use>
+                        </svg>Upload Files</span>
                 </label>
             </div>
         </div>
